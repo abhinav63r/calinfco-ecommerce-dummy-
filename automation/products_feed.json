@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "name": "RO Water Purifier",
+    "category": "Purifiers",
+    "description": "Multi-stage advanced RO purification eliminating dissolved solids, bacteria, and heavy metals.",
+    "price": "₹12,499",
+    "prompt_hint": "ultra-modern kitchen countertop with a sleek white RO water purifier, pouring crystal clear water into a glass"
+  },
+  {
+    "id": 2,
+    "name": "Copper Water Purifier",
+    "category": "Purifiers",
+    "description": "Active copper infusion technology boosting immunity while providing pure drinking water.",
+    "price": "₹15,499",
+    "prompt_hint": "luxury kitchen interior featuring a sleek copper-accented water purifier system with pure water droplets"
+  },
+  {
+    "id": 3,
+    "name": "Alkaline Water Purifier",
+    "category": "Purifiers",
+    "description": "Balances pH levels (8.0 - 8.5) and retains essential minerals for superior hydration.",
+    "price": "₹14,999",
+    "prompt_hint": "futuristic alkaline water purifier with LED digital display showing pH 8.5 in a bright modern home"
+  },
+  {
+    "id": 4,
+    "name": "Commercial RO Purifier",
+    "category": "Purifiers",
+    "description": "High-capacity 50L/hr purification designed for offices, restaurants, and institutions.",
+    "price": "₹24,999",
+    "prompt_hint": "commercial stainless steel industrial RO water purification plant in a clean modern facility"
+  },
+  {
+    "id": 5,
+    "name": "UV Water Purifier",
+    "category": "Purifiers",
+    "description": "Powerful ultraviolet germicidal purification ensuring 99.9% biological pathogen removal.",
+    "price": "₹9,499",
+    "prompt_hint": "compact wall-mounted UV water purifier with blue glowing indicator light in a minimalist kitchen"
+  },
+  {
+    "id": 6,
+    "name": "Hot and Cold Dispenser",
+    "category": "Dispensers",
+    "description": "Dual temperature dispenser providing instant chilled drinking water and boiling water for tea.",
+    "price": "₹10,999",
+    "prompt_hint": "sleek freestanding water dispenser in a modern corporate office lounge dispensing steaming hot and cold water"
+  },
+  {
+    "id": 7,
+    "name": "Sediment Filter 10 Inch",
+    "category": "Filters",
+    "description": "Spun polypropylene candle trapping sand, mud, silt, and rust particles before purification.",
+    "price": "₹299",
+    "prompt_hint": "ultra clean white 10 inch sediment filter cartridge shown with microscopic water filtration detail"
+  },
+  {
+    "id": 8,
+    "name": "RO Membrane 75 GPD",
+    "category": "Filters",
+    "description": "0.0001 micron composite membrane rejecting up to 98% TDS and harmful chemical salts.",
+    "price": "₹1,499",
+    "prompt_hint": "high-tech semi-permeable spiral wound RO membrane filter cutaway view showing microscopic layers"
+  }
+]

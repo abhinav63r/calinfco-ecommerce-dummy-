@@ -1,0 +1,177 @@
+{
+  "name": "Califnco - Scheduled Daily Instagram AI Product Poster",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "1",
+      "name": "Daily Schedule (09:00 AM)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/califnco/calinfo/main/automation/products_feed.json",
+        "options": {}
+      },
+      "id": "2",
+      "name": "Fetch Product Catalogue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all()[0].json;\nconst now = new Date();\nconst start = new Date(now.getFullYear(), 0, 0);\nconst dayOfYear = Math.floor((now - start) / (1000 * 60 * 60 * 24));\nconst product = items[dayOfYear % items.length];\nreturn [{ json: product }];"
+      },
+      "id": "3",
+      "name": "Select Daily Product",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "={{ $env.GEMINI_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [{\n    \"parts\": [{\n      \"text\": \"Write a viral, high-converting Instagram caption for our water purifier product named '{{ $json.name }}'. Category: {{ $json.category }}. Price: {{ $json.price }}. Features: {{ $json.description }}. Include engaging emojis, 3 benefit bullet points, Call to Action, and 15 relevant hashtags including #Califnco #WaterPurifier #ROWater #PureWater #HealthyLiving.\"\n    }]\n  }]\n}"
+      },
+      "id": "4",
+      "name": "Gemini AI (Caption & Hashtags)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prompt = `commercial product photography of ${$node['Select Daily Product'].json.prompt_hint}, 8k, photorealistic, clean bright kitchen, studio lighting, water droplets, award winning advertising shot`;\nconst imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1080&height=1080&nologo=true&model=flux`;\nreturn [{ json: { imageUrl } }];"
+      },
+      "id": "5",
+      "name": "AI Image Generator (Hugging Face / Flux)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.INSTAGRAM_USER_ID }}/media",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"image_url\": \"{{ $node['AI Image Generator (Hugging Face / Flux)'].json.imageUrl }}\",\n  \"caption\": \"{{ $node['Gemini AI (Caption & Hashtags)'].json.candidates[0].content.parts[0].text.replace(/\"/g, '\\\\\"') }}\",\n  \"access_token\": \"{{ $env.INSTAGRAM_ACCESS_TOKEN }}\"\n}"
+      },
+      "id": "6",
+      "name": "Create Instagram Media Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1160, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.INSTAGRAM_USER_ID }}/media_publish",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"creation_id\": \"{{ $json.id }}\",\n  \"access_token\": \"{{ $env.INSTAGRAM_ACCESS_TOKEN }}\"\n}"
+      },
+      "id": "7",
+      "name": "Publish Post on Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1380, 300]
+    }
+  ],
+  "connections": {
+    "Daily Schedule (09:00 AM)": {
+      "main": [
+        [
+          {
+            "node": "Fetch Product Catalogue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Product Catalogue": {
+      "main": [
+        [
+          {
+            "node": "Select Daily Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Daily Product": {
+      "main": [
+        [
+          {
+            "node": "Gemini AI (Caption & Hashtags)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Image Generator (Hugging Face / Flux)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini AI (Caption & Hashtags)": {
+      "main": [
+        [
+          {
+            "node": "Create Instagram Media Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Image Generator (Hugging Face / Flux)": {
+      "main": [
+        [
+          {
+            "node": "Create Instagram Media Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Instagram Media Container": {
+      "main": [
+        [
+          {
+            "node": "Publish Post on Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
